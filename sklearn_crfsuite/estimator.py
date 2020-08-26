@@ -277,9 +277,7 @@ class CRF(BaseEstimator):
         self._tagger = None
         self._info_cached = None
 
-    def fit(self, training_data: Generator[Tuple[Features, List[str]], None, None]):
-        """Better data loading than original implementation"""
-
+    def fit(self, training_data):
         if self._tagger:
             self._tagger.close()
             self._tagger = None
