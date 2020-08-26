@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
-
-from six.moves import zip
 from tqdm import tqdm
 import pycrfsuite
 
-from sklearn_crfsuite._fileresource import FileResource
-from sklearn_crfsuite.trainer import LinePerIterationTrainer
-from sklearn_crfsuite.compat import BaseEstimator
+from crf_tagger._fileresource import FileResource
+from crf_tagger.trainer import LinePerIterationTrainer
+from crf_tagger.compat import BaseEstimator
 
 
 class CRF(BaseEstimator):
@@ -207,37 +203,38 @@ class CRF(BaseEstimator):
         is to use pickle (or its alternatives like joblib).
 
     """
-    def __init__(self,
-                 algorithm=None,
 
-                 min_freq=None,
-                 all_possible_states=None,
-                 all_possible_transitions=None,
-                 c1=None,
-                 c2=None,
-                 max_iterations=None,
-                 num_memories=None,
-                 epsilon=None,
-                 period=None,
-                 delta=None,
-                 linesearch=None,
-                 max_linesearch=None,
-                 calibration_eta=None,
-                 calibration_rate=None,
-                 calibration_samples=None,
-                 calibration_candidates=None,
-                 calibration_max_trials=None,
-                 pa_type=None,
-                 c=None,
-                 error_sensitive=None,
-                 averaging=None,
-                 variance=None,
-                 gamma=None,
-
-                 verbose=False,
-                 model_filename=None,
-                 keep_tempfiles=False,
-                 trainer_cls=None):
+    def __init__(
+        self,
+        algorithm=None,
+        min_freq=None,
+        all_possible_states=None,
+        all_possible_transitions=None,
+        c1=None,
+        c2=None,
+        max_iterations=None,
+        num_memories=None,
+        epsilon=None,
+        period=None,
+        delta=None,
+        linesearch=None,
+        max_linesearch=None,
+        calibration_eta=None,
+        calibration_rate=None,
+        calibration_samples=None,
+        calibration_candidates=None,
+        calibration_max_trials=None,
+        pa_type=None,
+        c=None,
+        error_sensitive=None,
+        averaging=None,
+        variance=None,
+        gamma=None,
+        verbose=False,
+        model_filename=None,
+        keep_tempfiles=False,
+        trainer_cls=None,
+    ):
 
         self.algorithm = algorithm
         self.min_freq = min_freq
@@ -268,7 +265,7 @@ class CRF(BaseEstimator):
             filename=model_filename,
             keep_tempfiles=keep_tempfiles,
             suffix=".crfsuite",
-            prefix="model"
+            prefix="model",
         )
         self.verbose = verbose
         self.trainer_cls = trainer_cls
@@ -370,9 +367,10 @@ class CRF(BaseEstimator):
         """
         Return accuracy score computed for sequence items.
 
-        For other metrics check :mod:`sklearn_crfsuite.metrics`.
+        For other metrics check :mod:`crf_tagger.metrics`.
         """
-        from sklearn_crfsuite.metrics import flat_accuracy_score
+        from crf_tagger.metrics import flat_accuracy_score
+
         y_pred = self.predict(X)
         return flat_accuracy_score(y, y_pred)
 
@@ -407,7 +405,7 @@ class CRF(BaseEstimator):
         """
         if self._info is None:
             return None
-        return int(self._info.header['size'])
+        return int(self._info.header["size"])
 
     @property
     def num_attributes_(self):
@@ -416,7 +414,7 @@ class CRF(BaseEstimator):
         """
         if self._info is None:
             return None
-        return int(self._info.header['num_attrs'])
+        return int(self._info.header["num_attrs"])
 
     @property
     def attributes_(self):
@@ -463,39 +461,37 @@ class CRF(BaseEstimator):
     def _get_trainer(self):
         trainer_cls = self.trainer_cls or LinePerIterationTrainer
         params = {
-            'feature.minfreq': self.min_freq,
-            'feature.possible_states': self.all_possible_states,
-            'feature.possible_transitions': self.all_possible_transitions,
-            'c1': self.c1,
-            'c2': self.c2,
-            'max_iterations': self.max_iterations,
-            'num_memories': self.num_memories,
-            'epsilon': self.epsilon,
-            'period': self.period,
-            'delta': self.delta,
-            'linesearch': self.linesearch,
-            'max_linesearch': self.max_linesearch,
-            'calibration.eta': self.calibration_eta,
-            'calibration.rate': self.calibration_rate,
-            'calibration.samples': self.calibration_samples,
-            'calibration.candidates': self.calibration_candidates,
-            'calibration.max_trials': self.calibration_max_trials,
-            'type': self.pa_type,
-            'c': self.c,
-            'error_sensitive': self.error_sensitive,
-            'averaging': self.averaging,
-            'variance': self.variance,
-            'gamma': self.gamma,
+            "feature.minfreq": self.min_freq,
+            "feature.possible_states": self.all_possible_states,
+            "feature.possible_transitions": self.all_possible_transitions,
+            "c1": self.c1,
+            "c2": self.c2,
+            "max_iterations": self.max_iterations,
+            "num_memories": self.num_memories,
+            "epsilon": self.epsilon,
+            "period": self.period,
+            "delta": self.delta,
+            "linesearch": self.linesearch,
+            "max_linesearch": self.max_linesearch,
+            "calibration.eta": self.calibration_eta,
+            "calibration.rate": self.calibration_rate,
+            "calibration.samples": self.calibration_samples,
+            "calibration.candidates": self.calibration_candidates,
+            "calibration.max_trials": self.calibration_max_trials,
+            "type": self.pa_type,
+            "c": self.c,
+            "error_sensitive": self.error_sensitive,
+            "averaging": self.averaging,
+            "variance": self.variance,
+            "gamma": self.gamma,
         }
         params = {k: v for k, v in params.items() if v is not None}
         return trainer_cls(
-            algorithm=self.algorithm,
-            params=params,
-            verbose=self.verbose,
+            algorithm=self.algorithm, params=params, verbose=self.verbose,
         )
 
     def __getstate__(self):
         dct = self.__dict__.copy()
-        dct['_tagger'] = None
-        dct['_info_cached'] = None
+        dct["_tagger"] = None
+        dct["_info_cached"] = None
         return dct

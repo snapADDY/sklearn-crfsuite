@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-from itertools import chain
+sfrom itertools import chain
 
 
 def flatten(y):

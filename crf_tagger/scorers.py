@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 Scorer functions to use with scikit-learn ``cross_val_score``,
 ``GridSearchCV``, ``RandomizedSearchCV`` and other similar classes.
 """
 from sklearn.metrics import make_scorer
 
-from sklearn_crfsuite import metrics
+from crf_tagger import metrics
 
 
 flat_accuracy = make_scorer(metrics.flat_accuracy_score)
