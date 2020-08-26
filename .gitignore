@@ -12,3 +12,6 @@ htmlcov
 .cache
 __pycache__
 docs/_build
+.vscode
+.env
+.python-version
