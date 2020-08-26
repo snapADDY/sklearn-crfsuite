@@ -277,58 +277,21 @@ class CRF(BaseEstimator):
         self._tagger = None
         self._info_cached = None
 
-    def fit(self, X, y, X_dev=None, y_dev=None):
-        """
-        Train a model.
+    def fit(self, training_data: Generator[Tuple[Features, List[str]], None, None]):
+        """Better data loading than original implementation"""
 
-        Parameters
-        ----------
-        X : list of lists of dicts
-            Feature dicts for several documents (in a python-crfsuite format).
-
-        y : list of lists of strings
-            Labels for several documents.
-
-        X_dev : (optional) list of lists of dicts
-            Feature dicts used for testing.
-
-        y_dev : (optional) list of lists of strings
-            Labels corresponding to X_dev.
-        """
-        if (X_dev is None and y_dev is not None) or (X_dev is not None and y_dev is None):
-            raise ValueError("Pass both X_dev and y_dev to use the holdout data")
-
-        if self._tagger is not None:
+        if self._tagger:
             self._tagger.close()
             self._tagger = None
             self._info_cached = None
         self.modelfile.refresh()
 
         trainer = self._get_trainer()
-        train_data = zip(X, y)
 
-        if self.verbose:
-            train_data = tqdm(train_data, "loading training data to CRFsuite", len(X), leave=True)
-
-        for xseq, yseq in train_data:
+        for xseq, yseq in tqdm(training_data, desc="Loading training data to CRFsuite"):
             trainer.append(xseq, yseq)
 
-        if self.verbose:
-            print("")
-
-        if X_dev is not None:
-            test_data = zip(X_dev, y_dev)
-
-            if self.verbose:
-                test_data = tqdm(test_data, "loading dev data to CRFsuite", len(X_dev), leave=True)
-
-            for xseq, yseq in test_data:
-                trainer.append(xseq, yseq, 1)
-
-            if self.verbose:
-                print("")
-
-        trainer.train(self.modelfile.name, holdout=-1 if X_dev is None else 1)
+        trainer.train(self.modelfile.name, holdout=-1)
         self.training_log_ = trainer.logparser
         return self
 
