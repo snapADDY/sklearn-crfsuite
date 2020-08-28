@@ -274,7 +274,7 @@ class CRF(BaseEstimator):
         self._tagger = None
         self._info_cached = None
 
-    def fit(self, training_data):
+    def fit(self, *args, **kwargs):
         if self._tagger:
             self._tagger.close()
             self._tagger = None
@@ -283,7 +283,10 @@ class CRF(BaseEstimator):
 
         trainer = self._get_trainer()
 
-        for xseq, yseq in tqdm(training_data, desc="Loading training data to CRFsuite"):
+        if len(args) == 1:
+            args = args[0]
+
+        for xseq, yseq in tqdm(args, desc="Loading training data to CRFsuite"):
             trainer.append(xseq, yseq)
 
         trainer.train(self.modelfile.name, holdout=-1)
