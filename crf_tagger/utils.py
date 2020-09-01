@@ -1,4 +1,4 @@
-sfrom itertools import chain
+from itertools import chain
 
 
 def flatten(y):
