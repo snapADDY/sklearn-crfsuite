@@ -1,14 +1,15 @@
 [tool.poetry]
 name = "crf_tagger"
-version = "0.2.2"
+version = "0.3.0"
 description = "CRF tagger"
 authors = ["severinsimmler <s.simmler@snapaddy.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
 tqdm = "*"
-python-crfsuite = "*"
+python-crfsuite = "0.9.7"
 tabulate = "*"
+scikit-learn = "*"
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"

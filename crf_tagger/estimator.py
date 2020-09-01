@@ -274,7 +274,7 @@ class CRF(BaseEstimator):
         self._tagger = None
         self._info_cached = None
 
-    def fit(self, *args, **kwargs):
+    def fit(self, **kwargs):
         if self._tagger:
             self._tagger.close()
             self._tagger = None
@@ -283,10 +283,14 @@ class CRF(BaseEstimator):
 
         trainer = self._get_trainer()
 
-        if len(args) == 1:
-            args = args[0]
+        if "X" in kwargs and "y" in kwargs:
+            data = zip(kwargs["X"], kwargs["y"])
+        elif "data_generator" in kwargs:
+            data = kwargs["data_generator"]
+        else:
+            raise ValueError("Pass either X and y or a data generaotr as kwarg")
 
-        for xseq, yseq in tqdm(args, desc="Loading training data to CRFsuite"):
+        for xseq, yseq in tqdm(data, desc="Loading training data to CRFsuite"):
             trainer.append(xseq, yseq)
 
         trainer.train(self.modelfile.name, holdout=-1)
